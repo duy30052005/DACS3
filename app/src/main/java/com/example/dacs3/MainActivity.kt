@@ -16,6 +16,25 @@ import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.lightColorScheme
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.ui.graphics.Color
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Box
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.layout.ContentScale
+import com.example.dacs3.R
+import kotlin.random.Random
+import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.graphics.drawscope.*
+
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,27 +50,28 @@ class MainActivity : ComponentActivity() {
 fun MyApp() {
     var showText by remember { mutableStateOf(false) }
     var showMenu by remember { mutableStateOf(false) }
-
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("Ứng dụng của tôi") },
                 actions = {
-                    IconButton(onClick = { showMenu = true }) {
-                        Icon(Icons.Default.MoreVert, contentDescription = "Menu")
-                    }
-                    DropdownMenu(
-                        expanded = showMenu,
-                        onDismissRequest = { showMenu = false }
-                    ) {
-                        DropdownMenuItem(
-                            text = { Text("Tùy chọn 1") },
-                            onClick = { /* Xử lý khi chọn */ }
-                        )
-                        DropdownMenuItem(
-                            text = { Text("Tùy chọn 2") },
-                            onClick = { /* Xử lý khi chọn */ }
-                        )
+                    Box {
+                        IconButton(onClick = { showMenu = true }) {
+                            Icon(Icons.Default.MoreVert, contentDescription = "Menu")
+                        }
+                        DropdownMenu(
+                            expanded = showMenu,
+                            onDismissRequest = { showMenu = false }
+                        ) {
+                            DropdownMenuItem(
+                                text = { Text("Tùy chọn 1") },
+                                onClick = { showMenu = false } // Đóng menu khi chọn
+                            )
+                            DropdownMenuItem(
+                                text = { Text("Tùy chọn 2") },
+                                onClick = { showMenu = false }
+                            )
+                        }
                     }
                 }
             )
@@ -60,29 +80,35 @@ fun MyApp() {
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding),
-            contentAlignment = Alignment.Center
+                .padding(innerPadding)
         ) {
-            Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                Button(
-                    onClick = { showText = true },
-                    modifier = Modifier
-                        .width(200.dp)
-                        .height(50.dp)
-                        .padding(10.dp)
-                ) {
-                    Text("Nhấn vào tôi!")
-                }
-                if (showText) {
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Text("Bạn đã nhấn vào Button!")
-                }
-            }
+            Background()
+            Text(
+                text = "Hello Universe!",
+                color = Color.Black,
+                modifier = Modifier.align(Alignment.Center)
+                    .background(Color.White)
+
+            )
         }
     }
 
 }
 
+@Composable
+fun Background() {
+    Canvas(modifier = Modifier.fillMaxSize()) {
+        drawRect(color = Color.Black) // Nền đen vũ trụ
+
+        // Vẽ 100 ngôi sao ngẫu nhiên
+        repeat(1000) {
+            val x = Random.nextFloat() * size.width
+            val y = Random.nextFloat() * size.height
+            val radius = Random.nextFloat() * 3f + 1f // Ngôi sao có kích thước từ 1 đến 4 px
+            drawCircle(color = Color.White, radius = radius, center = androidx.compose.ui.geometry.Offset(x, y))
+        }
+    }
+}
 @Preview(showBackground = true)
 @Composable
 fun PreviewMyApp() {
