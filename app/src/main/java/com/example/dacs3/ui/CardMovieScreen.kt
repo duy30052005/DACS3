@@ -85,17 +85,39 @@ fun CardMovieScreen(navController: NavHostController, imageRes: Int, movieTitle:
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        Text(
-            text = movieTitle,
-            modifier = Modifier.padding(top = 8.dp),
-            fontSize = 20.sp,
-            color = Color.White,
-
-            fontWeight = FontWeight.Bold
-        )
+//        Text(
+//            text = movieTitle,
+//            modifier = Modifier.padding(top = 8.dp),
+//            fontSize = 20.sp,
+//            color = Color.White,
+//
+//            fontWeight = FontWeight.Bold
+//        )
 
         Spacer(modifier = Modifier.height(16.dp))
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            Button(
+                onClick = {
+                },
+                modifier= Modifier.weight(1f),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF952531))
 
+            ) {
+                Text("Đánh giá", fontSize = 16.sp)
+            }
+            Button(
+                onClick = {
+                    navController.navigate("movie_schedule/${imageRes}/${movieTitle}")
+
+                },
+                modifier= Modifier.weight(1f),
+                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF952531))
+            ) {
+                Text("Đặt vé", fontSize = 16.sp)
+            }
+        }
         Button(
             onClick = { navController.navigate("home") },
             modifier = Modifier.fillMaxWidth(),

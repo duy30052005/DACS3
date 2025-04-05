@@ -32,6 +32,10 @@ import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
+import com.example.dacs3.ui.MovieScheduleScreen
+import com.example.dacs3.ui.CinemaSeatScreen
+
+
 
 // ✅ Lớp MainActivity là điểm khởi đầu của ứng dụng
 class MainActivity : ComponentActivity() {
@@ -81,10 +85,18 @@ fun MyApp() {
                             expanded = showMenu,
                             onDismissRequest = { showMenu = false }
                         ) {
-                            DropdownMenuItem(text = { Text("Lịch chiếu") }, onClick = { showMenu = false })
-                            DropdownMenuItem(text = { Text("Phim") }, onClick = { showMenu = false })
-                            DropdownMenuItem(text = { Text("Ưu đãi") }, onClick = { showMenu = false })
-                            DropdownMenuItem(text = { Text("Đăng nhập/đăng kí") }, onClick = { showMenu = false })
+                            DropdownMenuItem(
+                                text = { Text("Lịch chiếu") },
+                                onClick = { showMenu = false })
+                            DropdownMenuItem(
+                                text = { Text("Phim") },
+                                onClick = { showMenu = false })
+                            DropdownMenuItem(
+                                text = { Text("Ưu đãi") },
+                                onClick = { showMenu = false })
+                            DropdownMenuItem(
+                                text = { Text("Đăng nhập/đăng kí") },
+                                onClick = { showMenu = false })
                         }
                     }
                 }
@@ -107,7 +119,36 @@ fun MyApp() {
 
                 // Gọi CardMovieScreen và truyền dữ liệu
                 CardMovieScreen(navController,imageRes = imageRes, movieTitle = movieTitle)
-            }        }
+            }
+            composable(
+                "movie_schedule/{imageRes}/{movieTitle}",
+                arguments = listOf(
+                    navArgument("imageRes") { type = NavType.IntType },
+                    navArgument("movieTitle") { type = NavType.StringType }
+                )
+            ) { backStackEntry ->
+                val imageRes = backStackEntry.arguments?.getInt("imageRes") ?: R.drawable.mat_biec
+                val movieTitle = backStackEntry.arguments?.getString("movieTitle") ?: "Default Movie"
+
+                // Gọi CardMovieScreen và truyền dữ liệu
+                MovieScheduleScreen(navController,imageRes = imageRes, movieTitle = movieTitle)
+            }
+
+            composable(
+                "cinema_seat/{imageRes}/{movieTitle}",
+                arguments = listOf(
+                    navArgument("imageRes") { type = NavType.IntType },
+                    navArgument("movieTitle") { type = NavType.StringType }
+                )
+            ) { backStackEntry ->
+                val imageRes = backStackEntry.arguments?.getInt("imageRes") ?: R.drawable.mat_biec
+                val movieTitle = backStackEntry.arguments?.getString("movieTitle") ?: "Default Movie"
+
+                // Gọi CardMovieScreen và truyền dữ liệu
+                CinemaSeatScreen(navController,imageRes = imageRes, movieTitle = movieTitle)
+
+            }
+        }
     }
 }
 

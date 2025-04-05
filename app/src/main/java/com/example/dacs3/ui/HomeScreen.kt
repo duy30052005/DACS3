@@ -213,7 +213,9 @@ fun AutoSlideshow(navController: NavController) {
                                 Text("Xem chi tiết", fontSize = textSize)
                             }
                             Button(
-                                onClick = { /* Xử lý thêm vào danh sách */ },
+                                onClick = {
+                                    navController.navigate("movie_schedule/${images[page].first}/${images[page].second}")
+                                },
                                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF952531))
                             ) {
                                 Text("Đặt vé", fontSize = textSize)

@@ -1,0 +1,12 @@
+package com.example.dacs3.model
+
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.DocumentSnapshot
+
+data class BillCombo(
+    val billComboId: String = "",
+    val billId: String = "",
+    val comboId: String = "",
+    val quantity: Int = 0,
+    val totalPrice: Double = 0.0
+)
