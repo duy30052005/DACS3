@@ -1,6 +1,7 @@
 package com.example.dacs3.ui
 
 
+import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -43,6 +44,7 @@ import com.example.dacs3.R
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.isActive
 
+@SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) {
     var showMenu by remember { mutableStateOf(false) }
@@ -85,6 +87,7 @@ fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) 
     }
 }
 // ✅ AutoSlideshow(): Hiệu ứng trình chiếu ảnh tự động
+@SuppressLint("UnusedBoxWithConstraintsScope")
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun AutoSlideshow(navController: NavController) {
@@ -228,6 +231,7 @@ fun AutoSlideshow(navController: NavController) {
     }
 }
 
+@SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun MovieListSection(navController: NavController, isLargeScreen: Boolean = false) {
     var selectedTab by remember { mutableStateOf("Đang Chiếu") } // Trạng thái tab
