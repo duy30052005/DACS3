@@ -69,6 +69,9 @@ dependencies {
     implementation("androidx.compose.foundation:foundation:1.6.4")
     implementation("io.coil-kt:coil-compose:2.4.0")
     implementation("androidx.navigation:navigation-compose:2.7.6")
+
+    implementation("androidx.compose.material:material-icons-extended:1.6.4")
+
 }
 
 apply(plugin = "com.google.gms.google-services")

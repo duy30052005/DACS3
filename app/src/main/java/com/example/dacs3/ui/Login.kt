@@ -1,114 +1,146 @@
 package com.example.dacs3.ui
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Email
+import androidx.compose.material.icons.filled.Lock
+import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontStyle
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
 
 @Composable
-fun LoginScreen(navController: NavController) {
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
-    var errorMessage by remember { mutableStateOf("") }
+fun ForgotPasswordText(onClick: () -> Unit) {
+    Text(
+        text = "Forgot your password?",
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 12.dp)
+            .clickable { onClick() },
+        style = TextStyle(
+            fontSize = 14.sp,
+            color = Color.Gray,
+            textAlign = TextAlign.Center,
+            textDecoration = TextDecoration.Underline
+        ),
+        textAlign = TextAlign.Center
+    )
+}
+@Composable
+fun LoginButton(onClick: () -> Unit) {
+    Button(
+        onClick = onClick,
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(50.dp),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Primary, // Màu nền nút
+            contentColor = Color.White // Màu chữ
+        ),
+        shape = RoundedCornerShape(12.dp),
+        elevation = ButtonDefaults.buttonElevation(
+            defaultElevation = 4.dp,
+            pressedElevation = 8.dp
+        )
+    ) {
+        Text(
+            text = "Login",
+            style = TextStyle(
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold
+            )
+        )
+    }
+}
+@Composable
+fun DontHaveAccountText(
+    onRegisterClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 16.dp),
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(text = "Don't have an account? ", color = Color.Black)
+        Text(
+            text = "Register",
+            color = Primary,
+            fontWeight = FontWeight.SemiBold,
+            textDecoration = TextDecoration.Underline,
+            modifier = Modifier.clickable { onRegisterClick() }
+        )
+    }
+}
 
-    Box(
+
+
+@Composable
+fun Login() {
+    Surface(
+        color = Color.White,
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFA05F63)),
-        contentAlignment = Alignment.Center
+            .background(Color.White)
+            .padding(28.dp)
     ) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 32.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Text(
-                text = "Đăng Nhập",
-                fontSize = 28.sp,
-                color = Color.White,
-                style = MaterialTheme.typography.headlineMedium
+        Column (modifier = Modifier.fillMaxSize()){
+            NormalTextComponent(value = "Hey there,")
+            HeadingTextComponent(value = "Welcome Back")
+            Spacer(modifier = Modifier.height(20.dp))
+
+            MyTextField(
+                labelValue = "Email",
+                leadingIcon = Icons.Default.Email
             )
-
-            Spacer(modifier = Modifier.height(32.dp))
-
-            OutlinedTextField(
-                value = email,
-                onValueChange = { email = it },
-                label = { Text("Email") },
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Email,
-                    imeAction = ImeAction.Next
-                ),
-                modifier = Modifier.fillMaxWidth()
+            PasswordTextField(
+                labelValue = "Password",
+                leadingIcon = Icons.Default.Lock
             )
+            Spacer(modifier = Modifier.height(5.dp))
+            ForgotPasswordText {
+            }
+            Spacer(modifier = Modifier.height(60.dp))
 
-            Spacer(modifier = Modifier.height(16.dp))
+            LoginButton {
+                Log.d("LoginButton", "Login clicked")
+            }
+            DontHaveAccountText {
 
-            OutlinedTextField(
-                value = password,
-                onValueChange = { password = it },
-                label = { Text("Mật khẩu") },
-                visualTransformation = PasswordVisualTransformation(),
-                singleLine = true,
-                keyboardOptions = KeyboardOptions(
-                    keyboardType = KeyboardType.Password,
-                    imeAction = ImeAction.Done
-                ),
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            if (errorMessage.isNotEmpty()) {
-                Text(text = errorMessage, color = Color.Red)
-                Spacer(modifier = Modifier.height(8.dp))
             }
 
-            Button(
-                onClick = {
-                    if (email.isEmpty() || password.isEmpty()) {
-                        errorMessage = "Vui lòng nhập đầy đủ thông tin."
-                    } else {
-                        // Xử lý đăng nhập ở đây (gọi API hoặc điều hướng)
-                        errorMessage = ""
-                        navController.navigate("home")
-                    }
-                },
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF952531)),
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text("Đăng nhập", fontSize = 16.sp)
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            Text(
-                text = "Chưa có tài khoản? Đăng ký",
-                color = Color.White,
-                modifier = Modifier.clickable { navController.navigate("register") }
-            )
         }
     }
 }
-@Preview(showBackground = true)
-@Composable
-fun PreviewLogin() {
-    val navController = rememberNavController()
 
-    LoginScreen(navController = navController)
+@Preview
+@Composable
+fun DefaultLogin() {
+    Login()
 }
