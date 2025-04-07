@@ -34,7 +34,8 @@ import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.example.dacs3.ui.MovieScheduleScreen
 import com.example.dacs3.ui.CinemaSeatScreen
-
+import com.example.dacs3.ui.Information
+import com.example.dacs3.ui.PaymentHistory
 
 
 // ✅ Lớp MainActivity là điểm khởi đầu của ứng dụng
@@ -43,7 +44,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge() // Hỗ trợ UI toàn màn hình (Edge-to-Edge)
         setContent {
-            MyApp() // Gọi hàm chính của giao diện
+            Information()
         }
     }
 }
