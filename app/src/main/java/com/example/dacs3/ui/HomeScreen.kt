@@ -1,6 +1,5 @@
 package com.example.dacs3.ui
 
-
 import android.annotation.SuppressLint
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
@@ -38,7 +37,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.dacs3.R
 import kotlinx.coroutines.delay
@@ -46,7 +44,7 @@ import kotlinx.coroutines.isActive
 
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
-fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) {
+fun HomeScreen(navController: NavController, modifier: Modifier = Modifier) {
     var showMenu by remember { mutableStateOf(false) }
 
     BoxWithConstraints(
@@ -54,8 +52,8 @@ fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) 
             .fillMaxSize()
             .background(Color(0xFFA05F63))
     ) {
-        val isLargeScreen = maxWidth > 600.dp // Xác định màn hình lớn (Tablet)
-        val contentPadding = if (isLargeScreen) 24.dp else 0.dp // Điều chỉnh padding theo màn hình
+        val isLargeScreen = maxWidth > 600.dp
+        val contentPadding = if (isLargeScreen) 24.dp else 0.dp
 
         Column(
             modifier = Modifier
@@ -68,13 +66,12 @@ fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) 
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(if (isLargeScreen) 600.dp else 524.dp) // Điều chỉnh chiều cao Slideshow
+                    .height(if (isLargeScreen) 600.dp else 524.dp)
             ) {
                 AutoSlideshow(navController)
             }
             CustomDivider()
 
-            // Hiển thị danh sách phim theo kiểu cột hoặc lưới
             MovieListSection(
                 navController = navController,
                 isLargeScreen = isLargeScreen
@@ -86,22 +83,22 @@ fun HomeScreen(navController: NavHostController, modifier: Modifier = Modifier) 
         }
     }
 }
-// ✅ AutoSlideshow(): Hiệu ứng trình chiếu ảnh tự động
+
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun AutoSlideshow(navController: NavController) {
+    // Cập nhật danh sách images để bao gồm videoId
     val images = listOf(
-        Pair(R.drawable.avengers, "Avengers: Endgame"),
-        Pair(R.drawable.mat_biec, "Mắt Biếc"),
-        Pair(R.drawable.thor, "Thor: Ragnarok")
+        Triple(R.drawable.avengers, "Avengers: Endgame", "TcMBFSGVi1c"), // Avengers: Endgame trailer
+        Triple(R.drawable.mat_biec, "Mắt Biếc", "TcMBFSGVi1c"), // Thay bằng ID video của Mắt Biếc
+        Triple(R.drawable.thor, "Thor: Ragnarok", "TcMBFSGVi1c") // Thay bằng ID video của Thor
     )
 
     val pagerState = rememberPagerState(pageCount = { images.size })
     var isScrolling by remember { mutableStateOf(false) }
     var showContent by remember { mutableStateOf(false) }
 
-    // Theo dõi trạng thái cuộn để ẩn/hiện nội dung
     LaunchedEffect(pagerState.isScrollInProgress) {
         isScrolling = pagerState.isScrollInProgress
         if (!isScrolling) {
@@ -112,7 +109,6 @@ fun AutoSlideshow(navController: NavController) {
         }
     }
 
-    // Tự động chuyển trang
     LaunchedEffect(Unit) {
         repeat(Int.MAX_VALUE) {
             delay(5000)
@@ -125,18 +121,15 @@ fun AutoSlideshow(navController: NavController) {
         modifier = Modifier.fillMaxWidth()
     ) {
         val screenHeight = maxHeight
-        val imageHeight = if (screenHeight < 600.dp) 524.dp else 574.dp  // Màn hình lớn thì tăng chiều cao ảnh
-        val textSize = if (screenHeight < 600.dp) 20.sp else 27.sp  // Font lớn hơn trên tablet
-        val paddingBottom = if (screenHeight < 600.dp) 55.dp else 80.dp  // Điều chỉnh padding
+        val imageHeight = if (screenHeight < 600.dp) 524.dp else 574.dp
+        val textSize = if (screenHeight < 600.dp) 20.sp else 27.sp
+        val paddingBottom = if (screenHeight < 600.dp) 55.dp else 80.dp
 
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .height(imageHeight)
         ) {
-            val coroutineScope = rememberCoroutineScope()
-
-            // Slideshow
             HorizontalPager(
                 state = pagerState,
                 modifier = Modifier.fillMaxWidth()
@@ -145,33 +138,31 @@ fun AutoSlideshow(navController: NavController) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(imageHeight)
-                        .clickable{
-                            navController.navigate("card_movie/${images[page].first}/${images[page].second}")
+                        .clickable {
+                            navController.navigate("card_movie/${images[page].first}/${images[page].second}/${images[page].third}")
                         }
                 ) {
                     Image(
                         painter = painterResource(id = images[page].first),
                         contentDescription = null,
                         modifier = Modifier
-                            .height(imageHeight - 100.dp) // Giữ tỉ lệ ảnh phù hợp
+                            .height(imageHeight - 100.dp)
                             .fillMaxWidth()
                             .drawWithContent {
                                 drawContent()
                                 drawRect(
                                     brush = Brush.verticalGradient(
                                         colors = listOf(Color.Transparent, Color(0xFFA05F63)),
-                                        startY = size.height * 0.01f, // 60% ảnh bắt đầu làm mờ
-                                        endY = size.height // 100% ảnh mờ hoàn toàn
+                                        startY = size.height * 0.01f,
+                                        endY = size.height
                                     ),
-                                    alpha = 1f // Điều chỉnh độ trong suốt
+                                    alpha = 1f
                                 )
                             }
                             .background(Color.Gray),
                         contentScale = ContentScale.Crop,
-
                     )
 
-                    // Hiệu ứng xuất hiện cho tên phim
                     AnimatedVisibility(
                         modifier = Modifier
                             .align(Alignment.BottomCenter)
@@ -191,7 +182,6 @@ fun AutoSlideshow(navController: NavController) {
                         )
                     }
 
-                    // Hiệu ứng xuất hiện cho các nút
                     AnimatedVisibility(
                         modifier = Modifier
                             .align(Alignment.BottomCenter)
@@ -208,10 +198,9 @@ fun AutoSlideshow(navController: NavController) {
                         ) {
                             Button(
                                 onClick = {
-                                    navController.navigate("card_movie/${images[page].first}/${images[page].second}")
+                                    navController.navigate("card_movie/${images[page].first}/${images[page].second}/${images[page].third}")
                                 },
                                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF952531))
-
                             ) {
                                 Text("Xem chi tiết", fontSize = textSize)
                             }
@@ -234,18 +223,18 @@ fun AutoSlideshow(navController: NavController) {
 @SuppressLint("UnusedBoxWithConstraintsScope")
 @Composable
 fun MovieListSection(navController: NavController, isLargeScreen: Boolean = false) {
-    var selectedTab by remember { mutableStateOf("Đang Chiếu") } // Trạng thái tab
+    var selectedTab by remember { mutableStateOf("Đang Chiếu") }
 
+    // Cập nhật danh sách phim để bao gồm videoId
     val nowShowingMovies = listOf(
-        Pair(R.drawable.avengers, "Avengers: Endgame"),
-        Pair(R.drawable.mat_biec, "Mắt Biếc"),
-        Pair(R.drawable.thor, "Thor: Ragnarok"),
+        Triple(R.drawable.avengers, "Avengers: Endgame", "TcMBFSGVi1c"),
+        Triple(R.drawable.mat_biec, "Mắt Biếc", "your_mat_biec_video_id"),
+        Triple(R.drawable.thor, "Thor: Ragnarok", "your_thor_video_id"),
     )
 
     val upcomingMovies = listOf(
-        Pair(R.drawable.trang_quynh, "Trạng Quỳnh"),
-        Pair(R.drawable.us, "Us"),
-
+        Triple(R.drawable.trang_quynh, "Trạng Quỳnh", "your_trang_quynh_video_id"),
+        Triple(R.drawable.us, "Us", "your_us_video_id"),
     )
 
     val moviesToShow = if (selectedTab == "Đang Chiếu") nowShowingMovies else upcomingMovies
@@ -254,7 +243,6 @@ fun MovieListSection(navController: NavController, isLargeScreen: Boolean = fals
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // 🔹 Thanh chọn tab phim
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
@@ -285,12 +273,11 @@ fun MovieListSection(navController: NavController, isLargeScreen: Boolean = fals
             val isTablet = maxWidth > 600.dp
 
             if (isTablet) {
-                // 🔹 Hiển thị dạng lưới trên màn hình lớn
                 LazyVerticalGrid(
                     columns = GridCells.Adaptive(180.dp),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .heightIn(max = 620.dp), // 🔥 Giới hạn chiều cao,
+                        .heightIn(max = 620.dp),
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
@@ -299,17 +286,14 @@ fun MovieListSection(navController: NavController, isLargeScreen: Boolean = fals
                     }
                 }
             } else {
-                // 🔹 Hiển thị dạng danh sách ngang trên màn hình nhỏ
                 val listState = rememberLazyListState()
-                val coroutineScope = rememberCoroutineScope()
 
-                // ✅ Tự động cuộn khi đang hoạt động
                 LaunchedEffect(selectedTab) {
                     while (isActive) {
                         val itemCount = moviesToShow.size
                         for (index in 0 until itemCount) {
                             listState.animateScrollToItem(index)
-                            delay(5000) // Dừng 5 giây trước khi chuyển tiếp
+                            delay(5000)
                         }
                     }
                 }
@@ -328,14 +312,13 @@ fun MovieListSection(navController: NavController, isLargeScreen: Boolean = fals
     }
 }
 
-// 🔹 Tách riêng phần hiển thị phim để tái sử dụng dễ dàng
 @Composable
-fun MovieItem(navController: NavController, movie: Pair<Int, String>) {
+fun MovieItem(navController: NavController, movie: Triple<Int, String, String>) {
     Column(
         modifier = Modifier
             .width(180.dp)
             .clickable {
-                navController.navigate("card_movie/${movie.first}/${movie.second}")
+                navController.navigate("card_movie/${movie.first}/${movie.second}/${movie.third}")
             }
             .padding(3.dp),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -369,37 +352,33 @@ fun PromotionScreen() {
         R.drawable.uu_dai_2,
         R.drawable.uu_dai_3,
         R.drawable.uu_dai_4
-    ).take(4) // Chỉ lấy 4 phần tử đầu tiên
+    ).take(4)
 
     Column(
         modifier = Modifier.fillMaxSize()
-
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth(),
             contentAlignment = Alignment.Center
         ) {
-            // Tiêu đề KHÔNG cuộn theo danh sách
             Text(
                 text = "KHUYẾN MÃI & ƯU ĐÃI",
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
                 color = Color.White,
                 modifier = Modifier.padding(16.dp)
-
             )
         }
-        Spacer(modifier = Modifier.height(8.dp)) // Khoảng cách với danh sách ảnh
+        Spacer(modifier = Modifier.height(8.dp))
 
-        // Lưới khuyến mãi (Chỉ hiển thị 4 ảnh)
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier
                 .fillMaxWidth()
-                .height(320.dp) // Giới hạn chiều cao để tránh lỗi
+                .height(320.dp)
                 .padding(horizontal = 16.dp)
         ) {
             items(promotionList) { imageRes ->
@@ -421,9 +400,8 @@ fun PromotionScreen() {
             }
         }
 
-        Spacer(modifier = Modifier.height(16.dp)) // Khoảng cách với nút bấm
+        Spacer(modifier = Modifier.height(16.dp))
 
-        // Nút "XEM NHIỀU HƠN"
         Box(
             modifier = Modifier
                 .fillMaxWidth()
@@ -442,22 +420,19 @@ fun PromotionScreen() {
     }
 }
 
-
-
-
 @Composable
 fun CustomDivider(modifier: Modifier = Modifier) {
     Box(
         modifier = Modifier
-            .fillMaxWidth() // Chiếm toàn bộ màn hình để có thể căn giữa
-            .padding(vertical = 16.dp), // Tạo khoảng cách với các phần tử khác
-        contentAlignment = Alignment.Center // Căn giữa cả chiều ngang và dọc
+            .fillMaxWidth()
+            .padding(vertical = 16.dp),
+        contentAlignment = Alignment.Center
     ) {
         Box(
             modifier = Modifier
-                .width(300.dp)     // Độ rộng có thể điều chỉnh
-                .height(5.dp) // Độ dày có thể điều chỉnh
-                .background(Color.White, shape = RoundedCornerShape(50)) // Màu trắng, bo góc nhẹ
+                .width(300.dp)
+                .height(5.dp)
+                .background(Color.White, shape = RoundedCornerShape(50))
         )
     }
 }
@@ -466,6 +441,5 @@ fun CustomDivider(modifier: Modifier = Modifier) {
 @Composable
 fun PreviewHomeScreen() {
     val navController = rememberNavController()
-
     HomeScreen(navController = navController)
 }
